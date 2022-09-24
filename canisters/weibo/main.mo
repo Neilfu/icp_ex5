@@ -33,6 +33,7 @@ shared(install) actor class Weibo() = this {
     post: shared (Text) -> async ();
     get_name:() -> async(Text);
     set_name: (name:Text) -> async();
+    id2name: (id:Principal) -> async(Text);
     posts: shared query (since:Time.Time) -> async [Message];
     timeline: shared (since:Time.Time) -> async [Message];
   };
@@ -106,6 +107,13 @@ shared(install) actor class Weibo() = this {
       }
     };
     List.toArray(filter_result);
+  };
+
+  public shared func id2name(id:Text):async (Text){
+    let principal = Principal.fromText(id);
+    let canister: Microblog = actor(Principal.toText(principal));
+    let name = await canister.get_name();
+    name;
   };
 
   public shared func timeline(since:Time.Time): async [Message]{

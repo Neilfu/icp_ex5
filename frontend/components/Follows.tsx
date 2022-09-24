@@ -1,14 +1,54 @@
 import { useCanister } from "@connect2ic/react"
 import React, { useEffect, useState } from "react"
-import { List,Button,Input,Space } from 'antd'
-import { UserOutlined,PlusOutlined } from '@ant-design/icons';
+import { List,Button,Input,Space, Popover } from 'antd'
+import { UserOutlined,PlusOutlined } from '@ant-design/icons'
+import {MessageType} from '../App'
 
-const Follows = ({follows,onFollow}) => {
+interface PropsType {
+  messages: MessageType[];
+  follows:string[];
+  onFollow:any;
+  id2name: any;
+};
+
+const Follows: React.FC<PropsType>= ({messages,follows,onFollow, id2name}) => {
   const [bloggerId, setBloggerId] = useState<string>('');
+  const [msgs4id, setMsgs4id] = useState<MessageType[]>([])
+  const [author,setAuthor] = useState<string>('');
+
+
+  const onClick = (e,id) =>{
+    if(id) 
+      id2name(id).then(author =>{
+        console.log('author',author,'id',id)
+        setAuthor(author);
+        setMsgs4id(messages.filter(msg=>msg.author == author))
+      })
+
+  }
+
   const onChange = (e:any) =>{
     setBloggerId(e.target.value)
   }
+ 
+  const tick2Datetime = (n: any) => {
+    const tick: number = Number(n / BigInt(1000000))
+    const date = new Date(tick)
+    return date.toLocaleString()
+  }  
+
+
   
+  const content = (
+          <List
+            size="small"
+            dataSource={msgs4id}
+            renderItem={(message:MessageType) => <List.Item
+            >
+              {message.text} <br/> 发布时间: {tick2Datetime(message.time)}
+            </List.Item>} />
+    )
+ 
   return (
     <>
       <Space>
@@ -18,7 +58,14 @@ const Follows = ({follows,onFollow}) => {
        <List
         size="small"
         dataSource={follows}
-        renderItem={id => <List.Item>{id as string}</List.Item>}
+        renderItem={id => <List.Item>
+          
+            <Popover content={msgs4id.length>0?content:''} title={"他["+ author + "]发表的消息："}>
+              <Button  onClick={e=>onClick(e,id)}>{id as string}</Button>
+          </Popover>
+          
+          
+          </List.Item>}
       />
 
     </>

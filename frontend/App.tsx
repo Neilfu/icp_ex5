@@ -64,6 +64,10 @@ function App() {
     refreshName()
   }
 
+  const id2name = async(id:string) =>{
+    if (id)  return await weibo.id2name(id)
+  }
+
   const refreshMessages = async () => {
     const messages:MessageType[] = await weibo.timeline(0) as MessageType[]
     setMessages(messages)
@@ -101,8 +105,10 @@ function App() {
         </Content>
         <Sider width={400} theme="light">
           <Follows
+            messages={messages}
             follows={follows}
             onFollow={onFollow}
+            id2name={id2name}
           />
         </Sider>
       </Layout>
