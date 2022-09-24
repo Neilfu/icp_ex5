@@ -41,7 +41,7 @@ const Messages: React.FC<PropsType> = ({ messages, followsLength, followedLength
 
         <Statistic title="关注" value={followsLength} />
 
-        <Statistic title="粉丝" value={followedLength} />
+
         <Button shape="circle" type="primary" icon={<FormOutlined />} onClick={() => setIsOpen(true)}></Button>
       </Space>
 

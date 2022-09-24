@@ -60,7 +60,7 @@ function App() {
   }
 
   const rename = async (newname) =>{
-    await weibo.setName(newname)
+    await weibo.set_name(newname)
     refreshName()
   }
 
@@ -73,7 +73,7 @@ function App() {
   },[])
 
    const refreshName = async () => {
-      let name:string = await weibo.getName() as string;
+      let name:string = await weibo.get_name() as string;
       setName(name)
   }
 

@@ -31,8 +31,8 @@ shared(install) actor class Weibo() = this {
     follow: shared(Text) -> async ();
     follows: shared query () -> async [Text];
     post: shared (Text) -> async ();
-    getName:() -> async(Text);
-    setName: (name:Text) -> async();
+    get_name:() -> async(Text);
+    set_name: (name:Text) -> async();
     posts: shared query (since:Time.Time) -> async [Message];
     timeline: shared (since:Time.Time) -> async [Message];
   };
@@ -54,12 +54,12 @@ shared(install) actor class Weibo() = this {
     installer;
   };
 
-  public shared (msg) func setName(myname:Text):async(){
+  public shared (msg) func set_name(myname:Text):async(){
     //assert(installer == msg.caller);
     name := myname;
   };
 
-  public shared query func getName():async(Text){
+  public shared query func get_name():async(Text){
     name;
   };
 
@@ -72,7 +72,7 @@ shared(install) actor class Weibo() = this {
     myProfile;
   };
 
-  stable var following: List.List<Principal> = List.nil();
+  var following: List.List<Principal> = List.nil();
 
   public shared func follow(id: Text):async() {
     following := List.push(Principal.fromText(id), following);
