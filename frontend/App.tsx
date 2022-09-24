@@ -18,6 +18,8 @@ import * as weibo from "../.dfx/local/canisters/weibo"
 import { useCanister } from "@connect2ic/react"
 import { Messages } from "./components/Messages"
 import { Follows } from "./components/Follows"
+import { Header as Title } from "./components/Header"
+
 import { Profile } from "./components/Profile"
 import 'antd/dist/antd.css';
 
@@ -34,6 +36,7 @@ function App() {
     
     const [follows, setFollows] = useState([])
     const [followed, setFollowed] = useState([])
+    const [name, setName] = useState('')
     const refreshFollows = async () => {
       let follows:string[] = await weibo.follows() as string[]
       setFollows(follows)
@@ -47,13 +50,18 @@ function App() {
       setFollows(followed)
     }
     useEffect(()=>{
-      refreshFollowed()
+      //refreshFollowed()
     },[])
 
   const postMessage = async (message) =>{
     await weibo.post(message)
     refreshMessages()
 
+  }
+
+  const rename = async (newname) =>{
+    await weibo.setName(newname)
+    refreshName()
   }
 
   const refreshMessages = async () => {
@@ -64,6 +72,15 @@ function App() {
     refreshMessages()
   },[])
 
+   const refreshName = async () => {
+      let name:string = await weibo.getName() as string;
+      setName(name)
+  }
+
+  useEffect(()=>{
+    refreshName();
+  },[])
+
   const onFollow = async (e:any, id:string) =>{
     await weibo.follow(id)
     refreshFollows()
@@ -72,7 +89,7 @@ function App() {
   return (
     <>
     <Layout >
-      <Header ><h1 style={{color:"white",textAlign:"center"}}>迷你微博</h1></Header>
+      <Header ><Title name={name} rename={rename}/>{name}</Header>
       <Layout>
         <Content>
             <Messages 
