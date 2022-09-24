@@ -1,0 +1,42 @@
+{
+  "canisters": {
+    "weibo": {
+      "main": "canisters/weibo/main.mo",
+      "type": "motoko"
+    },
+    "weibo2": {
+      "main": "canisters/weibo/main.mo",
+      "type": "motoko"
+    },
+    "assets": {
+      "dependencies": [
+        "weibo"
+      ],
+      "frontend": {
+        "entrypoint": "dist/index.html"
+      },
+      "source": [
+        "dist/"
+      ],
+      "type": "assets"
+    }
+  },
+  "defaults": {
+    "build": {
+      "packtool": ""
+    }
+  },
+  "networks": {
+    "local": {
+      "bind": "127.0.0.1:8000",
+      "type": "ephemeral"
+    },
+    "ic": {
+      "providers": [
+        "https://mainnet.dfinity.network"
+      ],
+      "type": "persistent"
+    }
+  },
+  "version": 1
+}
