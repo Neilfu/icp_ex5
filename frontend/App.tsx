@@ -23,7 +23,7 @@ import 'antd/dist/antd.css';
 
 export interface MessageType {
   text: string;
-  time: string;
+  time: number;
   author: string;
 } 
 

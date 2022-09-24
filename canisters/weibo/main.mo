@@ -7,13 +7,14 @@ import Principal "mo:base/Principal";
 import Array "mo:base/Array";
 import Debug "mo:base/Debug";
 shared(install) actor class Weibo() = this {
-  public type Message = {
+  type Message = {
     author: Text;
     text: Text;
     time: Time.Time;
   };
 
-  public type Blogger = {
+
+  type Blogger = {
     id: Principal;
     name: Text;
     sex: Text;
@@ -21,12 +22,17 @@ shared(install) actor class Weibo() = this {
     city:Text;
   };
 
+  type Subscriber = {
+    topic: Text;
+    callback: shared Microblog->();
+  };
+
   public type Microblog = actor{
     follow: shared(Text) -> async ();
     follows: shared query () -> async [Text];
     post: shared (Text) -> async ();
-    getName:() -> async(Blogger);
-    setName: (profile:Blogger) -> async();
+    getName:() -> async(Text);
+    setName: (name:Text) -> async();
     posts: shared query (since:Time.Time) -> async [Message];
     timeline: shared (since:Time.Time) -> async [Message];
   };

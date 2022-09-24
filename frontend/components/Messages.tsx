@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { List,Button, Modal, Input,Space, Statistic,Skeleton,Avatar } from 'antd'
+import { List,Button, Modal, Input,Space, Statistic,Avatar,Divider } from 'antd'
 import { FormOutlined } from '@ant-design/icons'
 import {MessageType} from '../App'
 const { TextArea } = Input
@@ -26,6 +26,12 @@ const Messages: React.FC<PropsType> = ({messages,followsLength, followedLength, 
     postMessage(message)
     setIsOpen(false)
   }
+
+  const tick2Datetime = (n:any)=>{
+    const tick:number = Number(n / BigInt(1000000));
+    const date =  new Date(tick);
+    return date.toLocaleString();
+  }
   
   return (
     <>
@@ -44,11 +50,17 @@ const Messages: React.FC<PropsType> = ({messages,followsLength, followedLength, 
         dataSource={messages}
         renderItem={message => 
           <List.Item
-            key={message.author}
           >
               <List.Item.Meta
                 avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-                title={<a href="">{message.author}</a>}
+                title={
+                  <Space split={<Divider type="vertical" />}>
+                    <a href="">{message.author}</a>
+                    <span> {tick2Datetime(message.time)}</span>
+                  </Space>
+                
+              
+              }
               />
               {message.text}
           </List.Item>
