@@ -24,7 +24,8 @@ const Follows: React.FC<PropsType>= ({messages,follows,onFollow, id2name}) => {
         setAuthor(author);
         setMsgs4id(messages.filter(msg=>msg.author == author))
       })
-
+      .catch(err=>console.log('error',err)
+      )
   }
 
   const onChange = (e:any) =>{

@@ -69,14 +69,19 @@ shared(install) actor class Weibo() = this {
     myProfile := profile;
   };
 
+
   public shared query func getProfile():async(Blogger){
     myProfile;
   };
 
-  var following: List.List<Principal> = List.nil();
+  var followings: List.List<Principal> = List.nil();
+ 
+  public shared func reset_follows():async() {
+    followings := List.nil();
+  };
 
   public shared func follow(id: Text):async() {
-    following := List.push(Principal.fromText(id), following);
+    followings := List.push(Principal.fromText(id), followings);
   };
 
   func id2Text(id:Principal):Text{
@@ -84,11 +89,15 @@ shared(install) actor class Weibo() = this {
   };
 
   public shared query func follows(): async [Text]{
-    let arrayFollowed:[Principal] = List.toArray(following);
+    let arrayFollowed:[Principal] = List.toArray(followings);
     Array.map<Principal,Text>(arrayFollowed, id2Text);
   };
 
   stable var messages: List.List<Message> = List.nil();
+
+  public shared func reset_messages():async(){
+    messages := List.nil()
+  };
 
   public shared query (msg) func getId(): async Text{
     Principal.toText(msg.caller);
@@ -118,7 +127,7 @@ shared(install) actor class Weibo() = this {
 
   public shared func timeline(since:Time.Time): async [Message]{
     var all: List.List<Message> = List.nil();
-    for (id in Iter.fromList(following)){
+    for (id in Iter.fromList(followings)){
       let canister: Microblog = actor(Principal.toText(id));
       let msgs = await canister.posts(since);
 

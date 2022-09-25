@@ -40,45 +40,51 @@ function App() {
     const refreshFollows = async () => {
       let follows:string[] = await weibo.follows() as string[]
       setFollows(follows)
+      weibo.follows().then(followed=>setFollows(followed as string[]))
+        .catch(err=>console.log("error refreshFollows",err));
+
     }
     useEffect(()=>{
       refreshFollows()
     },[])
 
-    const refreshFollowed = async () => {
-      let followed:string[] = await weibo.follows() as string[]
-      setFollows(followed)
-    }
-    useEffect(()=>{
-      //refreshFollowed()
-    },[])
-
   const postMessage = async (message) =>{
-    await weibo.post(message)
-    refreshMessages()
+    weibo.post(message).then(()=>refreshMessages())
+      .catch(err=>console.log("error postMessage",err));
+    
 
   }
 
   const rename = async (newname) =>{
-    await weibo.set_name(newname)
-    refreshName()
+    weibo.set_name(newname).then(()=>refreshName())
+      .catch(err=>console.log("error rename",err));
+    
   }
 
   const id2name = async(id:string) =>{
-    if (id)  return await weibo.id2name(id)
+    if (id)  
+      try{
+         return await weibo.id2name(id)
+      }
+      catch (err){
+        return err;
+      } 
   }
 
   const refreshMessages = async () => {
-    const messages:MessageType[] = await weibo.timeline(0) as MessageType[]
-    setMessages(messages)
+    weibo.timeline(0).then((messages:MessageType[])=>setMessages(messages))
+      .catch(err=>console.log('refreshMessages',err))
+
+    
   }
   useEffect(()=>{
     refreshMessages()
   },[])
 
    const refreshName = async () => {
-      let name:string = await weibo.get_name() as string;
-      setName(name)
+      weibo.get_name().then((name:string)=>setName(name))
+        .catch(err=>console.log("refreshName error", err)) ;
+      
   }
 
   useEffect(()=>{
@@ -86,8 +92,9 @@ function App() {
   },[])
 
   const onFollow = async (e:any, id:string) =>{
-    await weibo.follow(id)
-    refreshFollows()
+    weibo.follow(id).then(()=>refreshFollows())
+      .catch(err=>console.log('onFlow error',err))
+    
   }
 
   return (
