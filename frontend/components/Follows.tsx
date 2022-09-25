@@ -10,9 +10,10 @@ interface PropsType {
   onFollow:any;
   id2name: any;
   loadingFollow:boolean;
+  loadingFollowMsg:boolean;
 };
 
-const Follows: React.FC<PropsType>= ({messages,follows,onFollow, id2name,loadingFollow}) => {
+const Follows: React.FC<PropsType>= ({messages,follows,onFollow, id2name,loadingFollow,loadingFollowMsg}) => {
   const [bloggerId, setBloggerId] = useState<string>('');
   const [msgs4id, setMsgs4id] = useState<MessageType[]>([])
   const [author,setAuthor] = useState<string>('');
@@ -44,7 +45,7 @@ const Follows: React.FC<PropsType>= ({messages,follows,onFollow, id2name,loading
   const content = (
           <List
             size="small"
-            loading={loadingFollow}
+            loading={loadingFollowMsg}
             dataSource={msgs4id}
             renderItem={(message:MessageType) => <List.Item
             >
@@ -60,6 +61,7 @@ const Follows: React.FC<PropsType>= ({messages,follows,onFollow, id2name,loading
       </Space>
        <List
         size="small"
+        loading={loadingFollow}
         dataSource={follows}
         renderItem={id => <List.Item>
           
