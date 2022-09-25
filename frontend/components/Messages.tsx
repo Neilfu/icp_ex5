@@ -9,9 +9,10 @@ interface PropsType {
   followsLength: number;
   followedLength: number;
   postMessage: any;
+  loadingMsg:boolean;
 };
 
-const Messages: React.FC<PropsType> = ({ messages, followsLength, followedLength, postMessage }) => {
+const Messages: React.FC<PropsType> = ({ messages, followsLength, followedLength, postMessage,loadingMsg }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
   const [message, setMessage] = useState<string>("")
@@ -47,11 +48,12 @@ const Messages: React.FC<PropsType> = ({ messages, followsLength, followedLength
 
       <List
         size="small"
+        loading={loadingMsg}
         dataSource={messages}
         renderItem={message => <List.Item
         >
           <List.Item.Meta
-            avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
+            avatar={<Avatar src="" />}
             title={<Space split={<Divider type="vertical" />}>
               <a href="">{message.author}</a>
               <span> {tick2Datetime(message.time)}</span>

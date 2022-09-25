@@ -33,6 +33,8 @@ function App() {
 
     const [weibo] = useCanister("weibo")
     const [messages, setMessages] = useState<MessageType[]>([])
+    const [loadingMsg, setLoadingMsg] = useState<boolean>(true)
+    const [loadingFollow, setLoadingFollow] = useState<boolean>(true)
     
     const [follows, setFollows] = useState([])
     const [followed, setFollowed] = useState([])
@@ -64,7 +66,10 @@ function App() {
   const id2name = async(id:string) =>{
     if (id)  
       try{
-         return await weibo.id2name(id)
+         setLoadingFollow(true)
+         const name = await weibo.id2name(id)
+         setLoadingFollow(false)
+         return name
       }
       catch (err){
         return err;
@@ -72,7 +77,11 @@ function App() {
   }
 
   const refreshMessages = async () => {
-    weibo.timeline(0).then((messages:MessageType[])=>setMessages(messages))
+    setLoadingMsg(true);
+    weibo.timeline(0).then((messages:MessageType[])=>{
+      setMessages(messages)
+      setLoadingMsg(false)
+    })
       .catch(err=>console.log('refreshMessages',err))
 
     
@@ -108,6 +117,7 @@ function App() {
               followedLength= {followed.length}
               followsLength = {follows.length}
               postMessage={postMessage}
+              loadingMsg={loadingMsg}
             />
         </Content>
         <Sider width={400} theme="light">
@@ -116,6 +126,7 @@ function App() {
             follows={follows}
             onFollow={onFollow}
             id2name={id2name}
+            loadingFollow={loadingFollow}
           />
         </Sider>
       </Layout>
