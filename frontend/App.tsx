@@ -37,17 +37,24 @@ function App() {
     const [loadingFollow, setLoadingFollow] = useState<boolean>(true)
     
     const [follows, setFollows] = useState([])
-    const [followed, setFollowed] = useState([])
+    const [fans, setFans] = useState([])
     const [name, setName] = useState('')
     const refreshFollows = async () => {
-      let follows:string[] = await weibo.follows() as string[]
-      setFollows(follows)
       weibo.follows().then(followed=>setFollows(followed as string[]))
         .catch(err=>console.log("error refreshFollows",err));
 
     }
     useEffect(()=>{
       refreshFollows()
+    },[])
+
+    const refreshFans = async () => {
+      weibo.followeds().then(fans=>setFans(fans as string[]))
+        .catch(err=>console.log("error refreshFans",err));
+
+    }
+    useEffect(()=>{
+      refreshFans()
     },[])
 
   const postMessage = async (message) =>{
@@ -114,7 +121,7 @@ function App() {
         <Content>
             <Messages 
               messages={messages}
-              followedLength= {followed.length}
+              followedLength= {fans.length}
               followsLength = {follows.length}
               postMessage={postMessage}
               loadingMsg={loadingMsg}

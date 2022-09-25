@@ -8,6 +8,10 @@
       "main": "canisters/weibo/main.mo",
       "type": "motoko"
     },
+    "weibo3": {
+      "main": "canisters/weibo/main.mo",
+      "type": "motoko"
+    },    
     "assets": {
       "dependencies": [
         "weibo"

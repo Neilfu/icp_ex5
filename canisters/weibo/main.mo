@@ -30,6 +30,8 @@ shared(install) actor class Weibo() = this {
   public type Microblog = actor{
     follow: shared(Text) -> async ();
     follows: shared query () -> async [Text];
+    followed: shared (Principal) -> async();
+    followeds: shared() ->async([Text]);
     post: shared (Text) -> async ();
     get_name:() -> async(Text);
     set_name: (name:Text) -> async();
@@ -80,9 +82,35 @@ shared(install) actor class Weibo() = this {
     followings := List.nil();
   };
 
-  public shared func follow(id: Text):async() {
-    followings := List.push(Principal.fromText(id), followings);
+  var fans: List.List<Principal> = List.nil();
+
+  public shared ( msgs) func remoteFollowed(principal:Principal):async(){
+    Debug.print("remoteFollowed msgs" # Principal.toText(msgs.caller));
+    let id:Text = Principal.toText(principal);
+    let canister: Microblog = actor(id);
+    await canister.followed(principal);
   };
+
+
+
+  public shared(msgs) func follow(id: Text):async() {
+    Debug.print("follows msgs" # Principal.toText(msgs.caller));
+    let principal = Principal.fromText(id);
+    followings := List.push(principal, followings);
+    if (principal == msgs.caller) return; 
+    await remoteFollowed(principal);
+  };
+
+  public shared (msgs) func followed(id:Principal):async(){
+    Debug.print("followed msgs" # Principal.toText(msgs.caller));
+    fans := List.push(msgs.caller, fans);
+  };
+
+  public shared query func followeds(): async([Text]){
+    let a:[Principal] = List.toArray(fans);
+    Array.map<Principal,Text>(a, id2Text);
+  };
+
 
   func id2Text(id:Principal):Text{
     Principal.toText(id);
@@ -105,7 +133,6 @@ shared(install) actor class Weibo() = this {
   
   public shared (msg) func post(text:Text): async() {
     messages := List.push({text=text;time=Time.now();author=name}, messages);
-
   };
 
   public shared query func posts(since: Time.Time): async [Message] {
